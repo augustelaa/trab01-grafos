@@ -10,17 +10,13 @@ using namespace std;
 class Grafo {
     int ordem;
     int tamanho;
-    int **matriz;
+    list<int> *adjacencia;
 
     public:
     void setOrdem(int ordem) {
         this->ordem = ordem;
         this->tamanho = 0;
-        this->matriz = new int*[ordem];
-        
-        for(int i = 0; i < ordem; i++) {
-            this->matriz[i] = new int[ordem]{0};
-        }
+        this->adjacencia = new list<int>[ordem+1];
     }
 
     int getOrdem() {
@@ -32,17 +28,13 @@ class Grafo {
     }
 
     void adicionarArestaNaoDirigida(int verticeOrigem, int verticeDestino) {
-        this->matriz[verticeOrigem-1][verticeDestino-1]++;
-        this->matriz[verticeDestino-1][verticeOrigem-1]++;
-        tamanho++;
+        this->adjacencia[verticeOrigem].push_back(verticeDestino);
+        this->adjacencia[verticeDestino].push_back(verticeOrigem);
+        this->tamanho++;
     }
 
     int obtemGrau(int vertice) {
-        int soma = 0;
-        for (int i = 0; i < ordem; i++) {
-            soma += this->matriz[vertice-1][i];
-        }
-        return soma;
+        return this->adjacencia[vertice].size();
     }
 
     void printSeqGrau() {
