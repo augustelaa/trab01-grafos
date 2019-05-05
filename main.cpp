@@ -7,6 +7,11 @@
 
 using namespace std;
 
+/**
+ * Augusto Henrique da Conceição
+ * Marcelo Luis Jung
+ **/
+
 class Grafo {
     public:
     void adicionarArestaNaoDirigida(unsigned int verticeOrigem, unsigned int verticeDestino, bool somarTamanho);
@@ -615,6 +620,7 @@ int main() {
     g1.realizarBuscaLargura(5, true, "grafo4_bfs_5.txt");
     cout << endl;
     g2.realizarBuscaLargura(5, true, "grafo44_bfs_5.txt");
+
     resolverArquivoEnergia("grafo_energia.txt", "out_grafo_energia.txt");
     resolverArquivoDengue("grafo_dengue.txt", "out_grafo_dengue.txt");
 
