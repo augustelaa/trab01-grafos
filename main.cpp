@@ -17,7 +17,7 @@ class Grafo {
     unsigned int getTamanho();
     void realizarBuscaProfundidade(unsigned int verticeOrigem, bool exportar, string arquivo);
     bool realizarBuscaLargura(unsigned int verticeOrigem, bool exportar, string arquivo);
-    unsigned int getNivelV();
+    unsigned int getNivelV(unsigned int vertice);
 };
 
 class GrafoMatriz : public Grafo {
@@ -205,8 +205,8 @@ class GrafoMatriz : public Grafo {
         return true;
     }
 
-    unsigned int getNivelV() {
-        return *this->nivelV;
+    unsigned int getNivelV(unsigned int vertice) {
+        return this->nivelV[vertice];
     }
 };
 
@@ -382,8 +382,8 @@ class GrafoLista : public Grafo {
         return true;
     }
 
-    unsigned int getNivelV() {
-        return *this->nivelV;
+    unsigned int getNivelV(unsigned int vertice) {
+        return this->nivelV[vertice];
     }
 };
 
@@ -508,9 +508,40 @@ void resolverArquivoDengue(string nomeArquivoEntrada, string nomeArquivoSaida) {
                 if (arquivoSaida.is_open()) {
                     arquivoSaida << "Teste " << nTeste << endl;
                     
+                    // realiza a busca no primeiro vertice
                     grafo.realizarBuscaLargura(1, false, "");
-                    unsigned int nivelV = grafo.getNivelV();
 
+                    unsigned int ordem = grafo.getOrdem();
+                    unsigned int *niveis = new unsigned int[ordem];
+
+                    // busca o mais longe do primeiro vertice
+                    unsigned int maiorIndice = 0, maiorValor = 0, v1, v2;
+                    for (unsigned int j = 0; j < ordem; j++) {
+                        niveis[j] = grafo.getNivelV(j);
+                        if (niveis[j] > maiorValor) {
+                            maiorIndice = j;
+                            maiorValor = niveis[j];
+                        }
+                    }
+
+                    // realiza novamente a busca no vertice mais longe
+                    v1 = (maiorIndice+1);
+                    grafo.realizarBuscaLargura(v1, false, "");
+
+                    for (unsigned int k = 0; k < ordem; k++) {
+                        niveis[k] = grafo.getNivelV(k);
+                    }
+                    
+                    // ordena sem perder os indices
+                    vector<pair<int, int> > vp;  
+                    for (unsigned int l = 0; l < ordem; l++) {
+                        vp.push_back(make_pair(niveis[l], l)); 
+                    }                
+                    sort(vp.begin(), vp.end());
+                    // teoricamente o vertice do meio dos 2 maiores caminhos é o central
+                    v2 = vp[vp.size()/2].second;
+
+                    arquivoSaida << (v2+1) << endl;
                     arquivoSaida << endl;
                 }
                 if (std::stoul(linha) == 0) {
