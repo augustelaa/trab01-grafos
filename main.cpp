@@ -435,12 +435,6 @@ void resolverArquivoEnergia(string nomeArquivoEntrada, string nomeArquivoSaida) 
     ofstream arquivoSaida;
     GrafoLista grafo;
 
-    /*
-    * TODO:
-    * 3 <= E <= 100
-    * E − 1 <= L <= E × (E − 1)/2
-    * */    
-
     arquivoEntrada.open(nomeArquivoEntrada);
     if (arquivoEntrada.is_open()) {
         while (getline(arquivoEntrada, linha)) {
@@ -450,6 +444,12 @@ void resolverArquivoEnergia(string nomeArquivoEntrada, string nomeArquivoSaida) 
                     continue;
                 }
                 grafo = GrafoLista();
+                if (std::stoul(linha.substr(0, pos)) < 3 || std::stoul(linha.substr(0, pos)) > 100) {
+                    // restrição
+                }
+                if ((std::stoul(linha.substr(pos+1, sizeof(linha)+1)) < (std::stoul(linha.substr(0, pos))-1)) || (std::stoul(linha.substr(pos+1, sizeof(linha)+1)) > (std::stoul(linha.substr(0, pos))*(((std::stoul(linha.substr(0, pos))-1)/2))))) {
+                    // restrição
+                }
                 grafo.setOrdem(std::stoul(linha.substr(0, pos)));
                 grafo.setTamanho(std::stoul(linha.substr(pos+1, sizeof(linha)+1)));
                 nLinha++;
@@ -502,6 +502,9 @@ void resolverArquivoDengue(string nomeArquivoEntrada, string nomeArquivoSaida) {
             unsigned int pos = linha.find(" ");
             if (pos == std::string::npos) {
                 nTeste++;
+                if (nTeste > 100) {
+                    // restrição
+                }
                 if (!arquivoSaida.is_open()) {
                     arquivoSaida.open(nomeArquivoSaida);
                 }
@@ -535,11 +538,19 @@ void resolverArquivoDengue(string nomeArquivoEntrada, string nomeArquivoSaida) {
                     // ordena sem perder os indices
                     vector<pair<int, int> > vp;  
                     for (unsigned int l = 0; l < ordem; l++) {
-                        vp.push_back(make_pair(niveis[l], l)); 
-                    }                
+                        vp.push_back(make_pair(niveis[l], l));
+                    }
                     sort(vp.begin(), vp.end());
+
+                    unsigned int middle = 0;
+                    if (vp.size() % 2 == 0) {
+                        middle = (vp.size()/2)-1;
+                    } else {
+                        middle = vp.size()/2;
+                    }
+
                     // teoricamente o vertice do meio dos 2 maiores caminhos é o central
-                    v2 = vp[vp.size()/2].second;
+                    v2 = vp[middle].second;
 
                     arquivoSaida << (v2+1) << endl;
                     arquivoSaida << endl;
@@ -581,15 +592,15 @@ void exportarArquivoLista(string arquivo, GrafoLista &grafo) {
 }
 
 int main() {
-    //GrafoLista g1;
-    //importarArquivoLista("grafo4.txt", g1);
-    //exportarArquivoLista("out_grafo4.txt", g1);
+    GrafoLista g1;
+    importarArquivoLista("grafo4.txt", g1);
+    exportarArquivoLista("out_grafo4.txt", g1);
     
-    //GrafoMatriz g2;
-    //importarArquivoMatriz("grafo4.txt", g2);
-    //exportarArquivoMatriz("out_grafo4.txt", g2);
+    GrafoMatriz g2;
+    importarArquivoMatriz("grafo4.txt", g2);
+    exportarArquivoMatriz("out_grafo44.txt", g2);
 
-    /*g1.realizarBuscaProfundidade(3, true, "grafo4_dfs_3.txt");
+    g1.realizarBuscaProfundidade(3, true, "grafo4_dfs_3.txt");
     cout << endl;
     g2.realizarBuscaProfundidade(3, true, "grafo44_dfs_3.txt");
     cout << endl;
@@ -603,8 +614,8 @@ int main() {
     cout << endl;
     g1.realizarBuscaLargura(5, true, "grafo4_bfs_5.txt");
     cout << endl;
-    g2.realizarBuscaLargura(5, true, "grafo44_bfs_5.txt");*/
-    //resolverArquivoEnergia("grafo_energia.txt", "out_grafo_energia.txt");
+    g2.realizarBuscaLargura(5, true, "grafo44_bfs_5.txt");
+    resolverArquivoEnergia("grafo_energia.txt", "out_grafo_energia.txt");
     resolverArquivoDengue("grafo_dengue.txt", "out_grafo_dengue.txt");
 
 
